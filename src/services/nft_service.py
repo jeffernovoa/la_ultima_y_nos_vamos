@@ -1,6 +1,7 @@
 from src.models.token_nft import TokenNFT
+from src.patterns.observer import Observer
 
-class NFTService:
+class NFTService(Observer):
     def __init__(self, repo):
         self.repo = repo
 
@@ -18,3 +19,6 @@ class NFTService:
             self.repo.transferir(token_id, new_owner)
         else:
             raise Exception("Token no pertenece al usuario actual")
+
+    def update(self, poll):
+        print(f"[NFTService] Encuesta {poll.id} cerrada. Se pueden emitir NFTs por participación.")
