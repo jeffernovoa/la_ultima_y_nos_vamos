@@ -1,13 +1,28 @@
-import hashlib
+import uuid
+from datetime import datetime, timedelta
+from src.models.vote import Vote
 
-class User:
-    def __init__(self, username, password):
-        self.username = username
-        self.password_hash = self._hash_password(password)
-        self.tokens = []
+class Poll:
+    def __init__(self, pregunta, opciones, duracion):
+        self.id = str(uuid.uuid4())
+        self.pregunta = pregunta
+        self.opciones = opciones
+        self.votos = []
+        self.estado = "activa"
+        self.timestamp_inicio = datetime.now()
+        self.duracion = timedelta(seconds=duracion)
 
-    def _hash_password(self, password):
-        return hashlib.pbkdf2_hmac('sha256', password.encode(), b'salt', 100000).hex()
+    def agregar_voto(self, voto):
+        self.votos.append(voto)
 
-    def verify_password(self, password):
-        return self.password_hash == self._hash_password(password)
+    def esta_activa(self):
+        return self.estado == "activa" and datetime.now() < self.timestamp_inicio + self.duracion
+
+    def cerrar(self):
+        self.estado = "cerrada"
+
+    def resultados(self):
+        conteo = {op: 0 for op in self.opciones}
+        for v in self.votos:
+            conteo[v.opcion] += 1
+        return conteo
