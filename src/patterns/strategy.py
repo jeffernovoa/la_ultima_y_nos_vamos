@@ -1,27 +1,38 @@
 import random
+import json
+
+# === Desempate ===
 
 class DesempateStrategy:
-    def resolve(self, opciones_empate):
-        raise NotImplementedError("Subclases deben implementar resolve()")
+    def resolver(self, opciones_con_empate):
+        raise NotImplementedError
 
-class AlfabeticoStrategy(DesempateStrategy):
-    def resolve(self, opciones_empate):
-        return sorted(opciones_empate)[0]
+class DesempateAlfabetico(DesempateStrategy):
+    def resolver(self, opciones_con_empate):
+        return sorted(opciones_con_empate)[0]
 
-class AleatorioStrategy(DesempateStrategy):
-    def resolve(self, opciones_empate):
-        return random.choice(opciones_empate)
+class DesempateAleatorio(DesempateStrategy):
+    def resolver(self, opciones_con_empate):
+        return random.choice(opciones_con_empate)
 
-class ProrrogaStrategy(DesempateStrategy):
-    def resolve(self, opciones_empate):
-        return "Empate: prórroga necesaria"
+class DesempateProrroga(DesempateStrategy):
+    def resolver(self, opciones_con_empate):
+        return None  # Indica que se debe extender la encuesta
 
-def get_desempate_strategy(nombre):
-    if nombre == "alfabetico":
-        return AlfabeticoStrategy()
-    elif nombre == "aleatorio":
-        return AleatorioStrategy()
-    elif nombre == "prorroga":
-        return ProrrogaStrategy()
-    else:
-        raise ValueError(f"Estrategia '{nombre}' no reconocida")
+# === Presentación de resultados ===
+
+class FormatoResultadosStrategy:
+    def formatear(self, resultados_dict):
+        raise NotImplementedError
+
+class FormatoTextoPlano(FormatoResultadosStrategy):
+    def formatear(self, resultados_dict):
+        return "\n".join(f"{op}: {votos} votos" for op, votos in resultados_dict.items())
+
+class FormatoAsciiGrafico(FormatoResultadosStrategy):
+    def formatear(self, resultados_dict):
+        return "\n".join(f"{op}: {'█' * votos} ({votos})" for op, votos in resultados_dict.items())
+
+class FormatoJSON(FormatoResultadosStrategy):
+    def formatear(self, resultados_dict):
+        return json.dumps(resultados_dict, indent=2)
