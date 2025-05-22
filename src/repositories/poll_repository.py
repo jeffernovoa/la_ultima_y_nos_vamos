@@ -2,7 +2,7 @@ from src.repositories.utils.mongo import mongo_db
 from datetime import datetime
 from src.models.poll import Poll
 
-class EncuestaRepository:
+class PollRepository:
     def __init__(self):
         self.collection = mongo_db["encuestas"]
         self.votos = mongo_db["votos"]
