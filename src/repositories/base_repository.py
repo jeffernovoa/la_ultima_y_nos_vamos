@@ -2,11 +2,15 @@ from abc import ABC, abstractmethod
 
 class BaseRepository(ABC):
     @abstractmethod
-    def save(self, entity):
+    def save(self, obj):
         pass
 
     @abstractmethod
-    def get_by_id(self, entity_id):
+    def get_by_id(self, obj_id):
+        pass
+
+    @abstractmethod
+    def delete(self, obj_id):
         pass
 
     @abstractmethod
