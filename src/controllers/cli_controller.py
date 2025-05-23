@@ -1,8 +1,9 @@
 class CLIController:
-    def __init__(self, poll_service, user_service, nft_service):
+    def __init__(self, user_service, poll_service, nft_service, chatbot_service):
         self.poll_service = poll_service
         self.user_service = user_service
         self.nft_service = nft_service
+        self.chatbot_service = chatbot_service
         self.usuario_actual = None
 
     def run(self):

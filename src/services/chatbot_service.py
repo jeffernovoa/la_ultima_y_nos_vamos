@@ -1,10 +1,9 @@
 from transformers import pipeline
-from src.services.poll_service import PollService
 
 class ChatbotService:
-    def __init__(self, poll_service: PollService):
+    def __init__(self, poll_service):
         self.poll_service = poll_service
-        self.pipeline = pipeline("conversational", model="facebook/blenderbot-400M-distill")
+        self.pipeline = pipeline("text-generation", model="gpt2")
 
     def responder(self, username, mensaje):
         mensaje_lower = mensaje.lower()
@@ -14,8 +13,8 @@ class ChatbotService:
         elif "cuánto falta" in mensaje_lower:
             return self._respuesta_tiempo()
         else:
-            respuesta = self.pipeline(mensaje)[0]["generated_text"]
-            return respuesta
+            respuesta = self.pipeline(mensaje, max_length=50, num_return_sequences=1)
+            return respuesta[0]["generated_text"]
 
     def _respuesta_ganador(self):
         encuestas = self.poll_service.repo.listar_encuestas_activas()

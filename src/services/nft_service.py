@@ -3,7 +3,8 @@ from datetime import datetime
 from src.repositories.utils.neo4j_utils import driver
 
 class NFTService:
-    def __init__(self):
+    def __init__(self, nft_repo):
+        self.nft_repo = nft_repo
         self.driver = driver
 
     def mint_token(self, owner, poll_id, option):

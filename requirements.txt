@@ -2,3 +2,7 @@ firebase_admin
 pymongo
 neo4j
 trasnformers
+bcrypt
+gradio
+pytest
+torch

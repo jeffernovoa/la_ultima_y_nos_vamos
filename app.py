@@ -1,3 +1,11 @@
+import firebase_admin
+from firebase_admin import credentials
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate("firebase_config.json")
+    firebase_admin.initialize_app(cred, {
+        "databaseURL": "https://usuarios-y-credenciales.firebaseio.com/"
+    })
 
 import argparse
 import threading
@@ -18,26 +26,19 @@ import gradio as gr
 
 # Inicialización de conexiones de bases de datos y Firebase
 def init_repositories():
-    # Paths/configuración
     mongo_uri = "mongodb://localhost:27017"
-    firebase_cred_path = "firebase_config.json"
     firebase_db_url = "https://usuarios-y-credenciales.firebaseio.com/"
 
-    # Repositorios
     user_repo = UserRepository(
         mongo_uri=mongo_uri, 
-        firebase_root=firebase_cred_path
+        firebase_root="usuarios"
     )
     
-    poll_repo = PollRepository(
-        firebase_root=firebase_cred_path,
-        firebase_db_url=firebase_db_url
-    )
+    poll_repo = PollRepository()
     
     nft_repo = NFTRepository(
         mongo_uri=mongo_uri,
-        firebase_root=firebase_cred_path,
-        firebase_db_url=firebase_db_url
+        firebase_root="nfts"
     )
 
     return user_repo, poll_repo, nft_repo
@@ -107,24 +108,11 @@ def main():
     cli_controller = CLIController(user_service, poll_service, nft_service, chatbot_service)
 
     if args.ui:
-        # Ejecutar Gradio UI en hilo aparte
         ui_app = build_gradio_ui(poll_service, chatbot_service, nft_service, user_service)
-
-        def run_ui():
-            ui_app.launch(server_name="0.0.0.0", server_port=7860, share=False)
-
-        ui_thread = threading.Thread(target=run_ui)
-        ui_thread.start()
-
-        # También lanzar CLI para admin
-        try:
-            cli_controller.run()
-        except KeyboardInterrupt:
-            print("Cerrando aplicación...")
-
+        ui_app.launch(server_name="0.0.0.0", server_port=7860, share=False, inbrowser=True)
+        
     else:
-        # Solo CLI
-        cli_controller.run()
+        cli_controller.run() 
 
 
 if __name__ == "__main__":

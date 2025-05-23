@@ -11,7 +11,8 @@ if not firebase_admin._apps:
     })
 
 class UserService:
-    def __init__(self):
+    def __init__(self, user_repo):
+        self.user_repo = user_repo
         self.db_ref = db.reference("/users")
         self.sesiones = {}
 
