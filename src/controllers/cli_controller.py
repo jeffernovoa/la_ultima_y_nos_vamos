@@ -43,6 +43,12 @@ class CLIController:
                     self.mostrar_tokens()
                 elif comando == "transferir_token":
                     self.transferir_token(args)
+                elif comando == "chatbot":
+                    if not args:
+                        print("Uso: chatbot <mensaje>")
+                    else:
+                        respuesta = self.chatbot_service.get_response(" ".join(args))
+                        print("Chatbot:", respuesta)
                 else:
                     print("Comando desconocido")
             except Exception as e:
@@ -60,6 +66,7 @@ Comandos disponibles:
   ver_resultados <id>               → Ver resultados finales
   mis_tokens                        → Ver mis NFTs
   transferir_token <id> <usuario>   → Transferir NFT
+  chatbot <mensaje>              → Hablar con el chatbot
   salir                              → Terminar sesión
 """)
 
