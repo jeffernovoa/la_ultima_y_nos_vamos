@@ -66,6 +66,12 @@ def build_gradio_ui(poll_service, chatbot_service, nft_service, user_service):
         tokens = nft_service.get_tokens_by_owner(username)
         # Convierte tokens a tabla simple para mostrar
         return "\n".join([f"{t.token_id} - {t.option} (Poll {t.poll_id})" for t in tokens])
+    
+    def register_ui(username, password):
+        try:
+            return user_service.registrar(username, password)
+        except Exception as e:
+            return f"Error al registrar: {e}"
 
     # Layout básico
     with gr.Blocks() as demo:
@@ -91,6 +97,13 @@ def build_gradio_ui(poll_service, chatbot_service, nft_service, user_service):
             tokens_btn = gr.Button("Mostrar tokens")
             tokens_out = gr.Textbox(label="Tokens")
             tokens_btn.click(tokens_ui, inputs=tokens_username, outputs=tokens_out)
+        
+        with gr.Tab("Registro"):
+            reg_username = gr.Textbox(label="Usuario")
+            reg_password = gr.Textbox(label="Contraseña", type="password")
+            reg_btn = gr.Button("Registrar")
+            reg_out = gr.Textbox(label="Resultado")
+            reg_btn.click(register_ui, inputs=[reg_username, reg_password], outputs=reg_out)
 
     return demo
 

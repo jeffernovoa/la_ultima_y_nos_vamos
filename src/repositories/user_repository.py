@@ -37,6 +37,10 @@ class UserRepository:
             if data:
                 return User.from_dict(data)
         return None
+    
+    def create(self, username, password):
+        # Crea el usuario en la base de datos
+        pass  # Implementa la lógica real
 
     def list_all(self) -> list[User]:
         results = []

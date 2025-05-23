@@ -25,7 +25,10 @@ class CLIController:
                 elif comando == "login":
                     self.login()
                 elif comando == "registrar":
-                    self.registrar()
+                    if len(args) < 2:
+                        print("Uso: registrar <usuario> <contraseña>")
+                    else:
+                        print(self.registrar_usuario(args[0], args[1]))
                 elif comando == "crear_encuesta":
                     self.crear_encuesta()
                 elif comando == "listar":
@@ -69,11 +72,12 @@ Comandos disponibles:
         else:
             print("Credenciales incorrectas.")
 
-    def registrar(self):
-        username = input("Nuevo usuario: ")
-        password = input("Contraseña: ")
-        self.user_service.register(username, password)
-        print("Usuario registrado correctamente.")
+    def registrar_usuario(self, username, password):
+        try:
+            self.user_service.registrar(username, password)
+            return "Usuario registrado correctamente."
+        except Exception as e:
+            return f"Error al registrar: {e}"
 
     def crear_encuesta(self):
         pregunta = input("Pregunta: ")

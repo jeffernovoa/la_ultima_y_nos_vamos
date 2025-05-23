@@ -13,18 +13,12 @@ if not firebase_admin._apps:
 class UserService:
     def __init__(self, user_repo):
         self.user_repo = user_repo
-        self.db_ref = db.reference("/users")
-        self.sesiones = {}
 
-    def register(self, username, password):
-        if self.db_ref.child(username).get() is not None:
+    def registrar(self, username, password):
+        if self.user_repo.get_by_username(username):
             raise Exception("El usuario ya existe.")
-
-        password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
-        self.db_ref.child(username).set({
-            "password_hash": password_hash
-        })
+        self.user_repo.create(username, password)
+        return "Usuario registrado correctamente."
 
     def login(self, username, password):
         user_data = self.db_ref.child(username).get()
